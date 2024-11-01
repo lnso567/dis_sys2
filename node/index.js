@@ -1,5 +1,5 @@
 import pg from 'pg';
-import express, { response } from 'express';
+import express from 'express';
 import bodyParser from 'body-parser';
 
 const {Client} = pg;
@@ -10,7 +10,8 @@ const client = new Client({
     password:'12345',
     port:5432,
 });
-//client.connect();
+
+client.connect();
 
 const createTable = async ()=>{
     await client.query(`CREATE TABLE IF NOT EXISTS users
@@ -18,7 +19,7 @@ const createTable = async ()=>{
     email VARCHAR (255) UNIQUE NOT NULL, age INT NOT NULL);`)
 };
 
-//createTable();
+createTable();
 
 const app = express();
 app.use(express.json());
@@ -30,12 +31,12 @@ app.get('/api', (req, res) => {
 
 app.get('/api/all', async (req, res) => {
     try {
-        const response = await client.query(`SELECT * FROM users `);
-        if(respone){
-            res.status(200).send(response.row);
-        }
+        const response = await client.query(`SELECT * FROM users`);
+        if(response){
+            res.status(200).send(response.rows);
+        } 
     }
-    catch (errror){
+    catch (error){
         res.status(500).send('Error');
         console.log(error);
     }
@@ -46,9 +47,9 @@ app.get('/api/form', async (req, res) =>{
         const name = req.body.name;
         const email = req.body.email;
         const age = req.body.age;
-        const response = await client.query(`INSERT INTO uesrs(name, email, age) VALUES('${name}', '${email}', '${age}')`);
-        if (Response){
-            res.status(200).send(response.body);
+        const response = await client.query(`INSERT INTO users(name, email, age) VALUES('${name}','${email}','${age}')`);
+        if (response){
+            res.status(200).send(req.body);
         }
     }
     catch(error){
@@ -57,4 +58,4 @@ app.get('/api/form', async (req, res) =>{
     }
 });
 
-app.listen(3000, ()=> {console.log('App is running on port 3000') });
+app.listen(3000, () => console.log('App is running on port 3000'));
