@@ -57,7 +57,8 @@ services:
     volumes:
       - ./data:/var/lib/postgressql/data
     environment:
-      - POSTGRES_PASSWORD=1234
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_USER=postgres
     ports:
       - "5432:5432"
     networks:
